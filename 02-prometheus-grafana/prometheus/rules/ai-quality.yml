@@ -38,3 +38,16 @@ groups:
         annotations:
           summary: "Eval-as-metric quality < 0.7 on {{ $labels.model }}"
           description: "Sustained drop in production eval score — investigate drift or model regression."
+
+      # Added after Incident 03 postmortem: OTel Collector was dark for 13 minutes
+      # with no automated detection. "Observe the observer."
+      - alert: OtelCollectorDown
+        expr: up{job="otel-collector"} == 0
+        for: 2m
+        labels:
+          severity: warning
+          service: otel-collector
+        annotations:
+          summary: "OTel Collector is unreachable — traces are dark"
+          description: "Prometheus cannot scrape otel-collector:8888 for 2 minutes. All OTLP spans are being dropped. Check Jaeger for missing traces."
+          runbook_url: "https://wiki.example/runbooks/otel-collector-down"
