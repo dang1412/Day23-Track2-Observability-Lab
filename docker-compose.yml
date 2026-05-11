@@ -99,6 +99,19 @@ services:
       COLLECTOR_OTLP_ENABLED: "true"
     networks: [obs]
 
+  promtail:
+    image: grafana/promtail:3.3.0
+    container_name: day23-promtail
+    volumes:
+      - ./03-tracing-and-logs/promtail/promtail-config.yaml:/etc/promtail/config.yaml:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: -config.file=/etc/promtail/config.yaml
+    depends_on:
+      - loki
+      - app
+    networks: [obs]
+
   otel-collector:
     image: otel/opentelemetry-collector-contrib:0.114.0
     container_name: day23-otel-collector
