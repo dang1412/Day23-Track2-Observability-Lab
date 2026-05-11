@@ -20,7 +20,7 @@ route:
 receivers:
   - name: 'slack-default'
     slack_configs:
-      - channel: '#observability'
+      - channel: '#day23-alert'
         send_resolved: true
         title: '{{ if eq .Status "firing" }}🔥{{ else }}✅{{ end }} {{ .GroupLabels.alertname }}'
         text: |
@@ -32,7 +32,7 @@ receivers:
 
   - name: 'slack-critical'
     slack_configs:
-      - channel: '#oncall'
+      - channel: '#day23-alert'
         send_resolved: true
         title: '🚨 CRITICAL: {{ .GroupLabels.alertname }}'
         text: |
