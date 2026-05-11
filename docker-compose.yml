@@ -48,14 +48,18 @@ services:
     networks: [obs]
 
   alertmanager:
-    image: prom/alertmanager:v0.27.0
+    image: prom/alertmanager:v0.32.1
     container_name: day23-alertmanager
     ports:
       - "127.0.0.1:9093:9093"
     volumes:
       - ./02-prometheus-grafana/alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
     environment:
-      SLACK_WEBHOOK_URL: ${SLACK_WEBHOOK_URL:-https://hooks.slack.com/services/REPLACE/ME}
+      SLACK_WEBHOOK_URL: ${SLACK_WEBHOOK_URL}
+    entrypoint:
+      - /bin/sh
+      - -c
+      - "echo $$SLACK_WEBHOOK_URL > /etc/alertmanager/slack_url && /bin/alertmanager --config.file=/etc/alertmanager/alertmanager.yml"
     networks: [obs]
 
   grafana:
